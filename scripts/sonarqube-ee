@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+docker run \
+  --rm \
+  --name sonarqube \
+  -p 9000:9000 \
+  -p 9092:9092 \
+    --stop-timeout 3600 \
+  -v ~/develop/docker-volumes/sonarqube/enterprise/data:/opt/sonarqube/data \
+  -v ~/develop/docker-volumes/sonarqube/enterprise/logs:/opt/sonarqube/logs \
+  -v ~/develop/docker-volumes/sonarqube/enterprise/extensions:/opt/sonarqube/extensions \
+  sonarqube:9.9-enterprise
