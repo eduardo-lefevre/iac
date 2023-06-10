@@ -1,0 +1,3 @@
+sonarqube_token = "<TOKEN>"
+sonarqube_url   = "http://localhost:9000"
+admin_password  = "<PASSWORD>"
