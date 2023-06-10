@@ -1,11 +1,50 @@
 #!/usr/bin/env bash
+
+# Set the default base volume directory
+BASE_VOLUME_DIR="${SONARQUBE_BASE_VOLUME_DIR:-$HOME/develop/docker-volumes/sonarqube}"
+
+# Get the edition name from the command-line argument or use the default value "community"
+EDITION="${1:-community}"
+
+# Set the allowed editions
+ALLOWED_EDITIONS=("community" "developer" "enterprise")
+
+# Define the color escape sequences
+NC='\033[0m'  # No color escape code
+CYAN='\e[1;36m'  # Cyan color escape code
+RED='\033[0;31m'  # Red color escape code
+
+# Check if the provided edition is valid
+if [[ ! " ${ALLOWED_EDITIONS[@]} " =~ " ${EDITION} " ]]; then
+  allowed_editions_str=$(IFS=,; echo "${ALLOWED_EDITIONS[*]}")
+  echo -e "${RED}Invalid edition. Allowed editions are: ${allowed_editions_str}${NC}"
+  exit 1
+fi
+
+# Set the SonarQube version
+VERSION="9.9"
+
+# Create the base volume directory if it doesn't exist
+mkdir -p "${BASE_VOLUME_DIR}"
+
+# Create the edition directory if it doesn't exist
+mkdir -p "${BASE_VOLUME_DIR}/${EDITION}"
+
+# Create the subdirectories (data, logs, extensions) if they don't exist
+mkdir -p "${BASE_VOLUME_DIR}/${EDITION}/data"
+mkdir -p "${BASE_VOLUME_DIR}/${EDITION}/logs"
+mkdir -p "${BASE_VOLUME_DIR}/${EDITION}/extensions"
+
+# Print the message in cyan
+echo -e "${CYAN}Base Volume Directory: ${BASE_VOLUME_DIR}/${EDITION}${NC}"
+
 docker run \
   --rm \
   --name sonarqube \
   -p 9000:9000 \
   -p 9092:9092 \
   --stop-timeout 3600 \
-  -v ~/develop/docker-volumes/sonarqube/community/data:/opt/sonarqube/data \
-  -v ~/develop/docker-volumes/sonarqube/community/logs:/opt/sonarqube/logs \
-  -v ~/develop/docker-volumes/sonarqube/community/extensions:/opt/sonarqube/extensions \
-  sonarqube:9.9-community
+  -v "${BASE_VOLUME_DIR}/${EDITION}/data:/opt/sonarqube/data" \
+  -v "${BASE_VOLUME_DIR}/${EDITION}/logs:/opt/sonarqube/logs" \
+  -v "${BASE_VOLUME_DIR}/${EDITION}/extensions:/opt/sonarqube/extensions" \
+  "sonarqube:${VERSION}-${EDITION}"
