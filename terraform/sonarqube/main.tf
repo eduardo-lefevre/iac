@@ -1,9 +1,10 @@
 # Reference: https://registry.terraform.io/providers/jdamata/sonarqube/latest/docs
+
 terraform {
   required_providers {
     sonarqube = {
       source  = "jdamata/sonarqube"
-      version = "~> 0.16.2"
+      version = "~> 0.16.8"
     }
   }
 }
