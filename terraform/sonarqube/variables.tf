@@ -1,3 +1,8 @@
+variable "gh-org" {
+  description = "GitHub Organization"
+  default     = "elefevre66"
+}
+
 variable "sonarqube_url" {
   description = "SonarQube URL"
   default     = "http://localhost:9000"

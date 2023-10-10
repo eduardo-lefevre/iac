@@ -1,5 +1,5 @@
 # Please run this before applying the change:
-# terraform import -var-file=sonarqube.tfvars sonarqube_user.admin admin
+# terraform import -var-file=sq-community-localhost-admin.tfvars sonarqube_user.admin admin
 # --------------------------------
 # This is not possible, because it tries to recreate the user,
 # but SQ doesn't allow that, giving this error:
@@ -10,11 +10,11 @@
 #   password   = var.admin_password
 # }
 
-resource "sonarqube_user" "superuser" {
-  login_name = "superuser"
-  name       = "Safeguard Admin User"
-  password   = var.admin_password
-}
+#resource "sonarqube_user" "superuser" {
+#  login_name = "sq-admin"
+#  name       = "Safeguard Admin User"
+#  password   = var.admin_password
+#}
 
 # resource "sonarqube_user" "saml_user" {
 #   login_name = "saml-user"
