@@ -57,26 +57,30 @@ class SonarQubeClient:
 
         return all_data
 
-    def _user_permissions(self, prj_key: str = None):
+    def user_permissions(self, prj_key: str = None):
         _params = {"projectKey": prj_key} if prj_key else {}
         return self._request("/api/permissions/users", ps=100, params=_params, data_key='users')
 
-    def _group_permissions(self, prj_key: str = None):
+    def group_permissions(self, prj_key: str = None):
         _params = {"projectKey": prj_key} if prj_key else {}
         return self._request("/api/permissions/groups", ps=100, params=_params, data_key='groups')
 
-    def _projects_list(self):
+    def projects_list(self):
         _projects = self._request('/api/projects/search', ps=100, data_key='components')
         return _projects
 
-    def _project_main_branch(self, prj_key: str):
+    def project_branches(self, prj_key: str):
         branches = self._request('/api/project_branches/list', params={"project": prj_key}, data_key='branches')
+        return branches
+
+    def project_main_branch(self, prj_key: str):
+        branches = self.project_branches(prj_key)
         for branch in branches:
             if branch['isMain'] and branch['type'] == 'BRANCH':
                 return branch['name']
         return 'main'
 
-    def _project_repository(self, prj_key: str):
+    def project_repository(self, prj_key: str):
         try:
             alm_binding = self._request('/api/alm_settings/get_binding', params={"project": prj_key})
             return alm_binding
@@ -91,7 +95,7 @@ class SonarQubeClient:
         _group_users = []
         groups = self._request('/api/user_groups/search', ps=100, data_key='groups')
         for group in groups:
-            if not group["default"]:
+            if not group["default"]: # We don't need to list users in the default group
                 a_group = {"name": group['name'], 'users': []}
                 a_group_users = self._request("/api/user_groups/users", ps=100, params={"name": a_group['name']},
                                               data_key='users')
@@ -110,8 +114,8 @@ class SonarQubeClient:
             return []
 
     def global_permissions(self):
-        _user_perms = self._user_permissions()
-        _group_perms = self._group_permissions()
+        _user_perms = self.user_permissions()
+        _group_perms = self.group_permissions()
         _global_perms = {
             'users': _user_perms,
             'groups': _group_perms
@@ -121,13 +125,13 @@ class SonarQubeClient:
     def projects(self):
         _projects = []
 
-        for prj in self._projects_list():
+        for prj in self.projects_list():
             p_data = {}
             p_key = prj['key']
             p_data['key'] = p_key
             p_data['name'] = prj['name']
-            p_data['main_branch'] = self._project_main_branch(p_key)
-            p_data['repository'] = self._project_repository(p_key)
+            p_data['main_branch'] = self.project_main_branch(p_key)
+            p_data['repository'] = self.project_repository(p_key)
             _projects.append(p_data)
 
         return _projects
@@ -135,18 +139,19 @@ class SonarQubeClient:
     def project_permissions(self):
         _projects = []
 
-        for prj in self._projects_list():
+        for prj in self.projects_list():
             p_data = {}
             p_key = prj['key']
             p_data['key'] = p_key
             p_data['name'] = prj['name']
             p_data['permissions'] = {
-                'users': self._user_permissions(p_key),
-                'groups': self._group_permissions(p_key)
+                'users': self.user_permissions(p_key),
+                'groups': self.group_permissions(p_key)
             }
             _projects.append(p_data)
 
         return _projects
+
 
 if __name__ == "__main__":
     client = SonarQubeClient(token='file://.sq-token.pat')
