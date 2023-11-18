@@ -80,7 +80,7 @@ import {{
 }}
 
 import {{
-  id = "{p_key}"
+  id = "{p_key}/{p_main_branch}"
   to = sonarqube_project_main_branch.{_res_name(p_name, p_main_branch)}
 }}
 """)
@@ -99,6 +99,16 @@ import {{
 """)
         else:
             print(f"# Project '{p_name} ({p_key})' does not have a valid ALM configuration!")
+
+        qps = sonar.quality_profiles(project=p_key)
+        for qp in qps:
+            qp_id = f"{qp['name']}/{p_key}/{qp['language']}"
+            qp_res_name = _res_name(p_name, qp['name'], qp['language'])
+            print(f"""import {{
+  id = "{qp_id}"
+  to = sonarqube_qualityprofile_project_association.{qp_res_name}
+}}
+""")
 
 
 def project_permissions():
@@ -131,6 +141,15 @@ resource "sonarqube_permissions" "{_res_name(p_name, 'group', grp_perm['name'])}
     permissions = [{_sorted_quoted(grp_perm['permissions'])}]
 }}""")
 
+
+def quality_profiles():
+    for qp in sonar.quality_profiles():
+        print(f"""
+import {{
+  id = "{qp['key']}"
+  to = sonarqube_qualityprofile.{_res_name(qp['name'], qp['language'])}
+}}
+""")
 
 
 if __name__ == "__main__":

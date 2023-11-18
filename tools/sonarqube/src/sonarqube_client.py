@@ -152,12 +152,35 @@ class SonarQubeClient:
 
         return _projects
 
+    def quality_profiles(self, include_defaults=False, project=None):
+
+        params = {'project': project} if project else {}
+
+        _all_qps = self._request('api/qualityprofiles/search', params=params, data_key='profiles')
+        if include_defaults:
+            return _all_qps
+
+        _qps = []
+        for qp in _all_qps:
+            if not qp['isDefault']:
+                _qps.append(qp)
+        return _qps
+
+
 
 if __name__ == "__main__":
     client = SonarQubeClient(token='file://.sq-token.pat')
-    res = client._request('api/projects/search', ps=1, data_key='components')
+
+    # res = client._request('api/projects/search', ps=1, data_key='components')
+    # print(res)
+    # res = client._request('api/alm_settings/list')
+    # print(res)
+    # res = client._request('api/alm_settings/list', data_key='almSettings')
+    # print(res)
+
+    res = client.quality_profiles()
     print(res)
-    res = client._request('api/alm_settings/list')
+    res = client.quality_profiles(project='org.elefevre:iac')
     print(res)
-    res = client._request('api/alm_settings/list', data_key='almSettings')
-    print(res)
+    # res2 = client.quality_profiles(include_builtins=True)
+    # print(res2)
