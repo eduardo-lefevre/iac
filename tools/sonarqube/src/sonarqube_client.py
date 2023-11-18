@@ -95,7 +95,7 @@ class SonarQubeClient:
         _group_users = []
         groups = self._request('/api/user_groups/search', ps=100, data_key='groups')
         for group in groups:
-            if not group["default"]: # We don't need to list users in the default group
+            if not group["default"]:  # We don't need to list users in the default group
                 a_group = {"name": group['name'], 'users': []}
                 a_group_users = self._request("/api/user_groups/users", ps=100, params={"name": a_group['name']},
                                               data_key='users')
@@ -152,9 +152,21 @@ class SonarQubeClient:
 
         return _projects
 
-    def quality_profiles(self, include_defaults=False, project=None):
+    def quality_profiles(self, include_builtins=False):
 
-        params = {'project': project} if project else {}
+        _all_qps = self._request('api/qualityprofiles/search', data_key='profiles')
+        if include_builtins:
+            return _all_qps
+
+        _qps = []
+        for qp in _all_qps:
+            if not qp['isDefault']:
+                _qps.append(qp)
+        return _qps
+
+    def quality_profiles_by_project(self, project, include_defaults=False):
+
+        params = {'project': project}
 
         _all_qps = self._request('api/qualityprofiles/search', params=params, data_key='profiles')
         if include_defaults:
@@ -166,10 +178,31 @@ class SonarQubeClient:
                 _qps.append(qp)
         return _qps
 
+    def quality_gates(self, include_builtins=False):
+        _all_qgs = self._request('api/qualitygates/list', data_key='qualitygates')
+        if include_builtins:
+            return _all_qgs
+
+        _qgs = []
+        for qp in _all_qgs:
+            if not qp['isDefault']:
+                _qgs.append(qp)
+        return _qgs
+
+    def quality_gates_by_project(self, project, include_defaults=False):
+
+        params = {'project': project}
+
+        qg = self._request('api/qualitygates/get_by_project', params=params, data_key='qualityGate')
+        if not include_defaults and qg['default']:
+            return None
+        else:
+            return qg
 
 
 if __name__ == "__main__":
     client = SonarQubeClient(token='file://.sq-token.pat')
+    test_project = 'org.elefevre:iac'
 
     # res = client._request('api/projects/search', ps=1, data_key='components')
     # print(res)
@@ -180,7 +213,20 @@ if __name__ == "__main__":
 
     res = client.quality_profiles()
     print(res)
-    res = client.quality_profiles(project='org.elefevre:iac')
+    res2 = client.quality_profiles(include_builtins=True)
+    print(res2)
+
+    res = client.quality_profiles_by_project(test_project)
     print(res)
-    # res2 = client.quality_profiles(include_builtins=True)
-    # print(res2)
+    res2 = client.quality_profiles_by_project(project=test_project, include_builtins=True)
+    print(res2)
+
+    res = client.quality_gates()
+    print(res)
+    res = client.quality_gates(include_builtins=True)
+    print(res)
+
+    res = client.quality_gates_by_project(project=test_project)
+    print(res)
+    res = client.quality_gates_by_project(project=test_project, include_defaults=True)
+    print(res)

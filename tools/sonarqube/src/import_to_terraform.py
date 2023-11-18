@@ -100,13 +100,22 @@ import {{
         else:
             print(f"# Project '{p_name} ({p_key})' does not have a valid ALM configuration!")
 
-        qps = sonar.quality_profiles(project=p_key)
+        qps = sonar.quality_profiles_by_project(p_key)
         for qp in qps:
             qp_id = f"{qp['name']}/{p_key}/{qp['language']}"
-            qp_res_name = _res_name(p_name, qp['name'], qp['language'])
+            qp_res_name = _res_name(p_name, qp['language'], 'quality_profile')
             print(f"""import {{
   id = "{qp_id}"
   to = sonarqube_qualityprofile_project_association.{qp_res_name}
+}}
+""")
+        qg = sonar.quality_gates_by_project(p_key)
+        if qg:
+            qg_id = f"{qg['name']}/{p_key}"
+            qg_res_name = _res_name(p_name, 'quality_gate')
+            print(f"""import {{
+  id = "{qg_id}"
+  to = sonarqube_qualitygate_project_association.{qg_res_name}
 }}
 """)
 
@@ -148,6 +157,16 @@ def quality_profiles():
 import {{
   id = "{qp['key']}"
   to = sonarqube_qualityprofile.{_res_name(qp['name'], qp['language'])}
+}}
+""")
+
+def quality_gates():
+    for qg in sonar.quality_gates():
+        if not qg['isBuiltIn']:
+            print(f"""
+import {{
+  id = "{qg['name']}"
+  to = sonarqube_qualitygate.{_res_name(qg['name'], 'quality_gate')}
 }}
 """)
 
