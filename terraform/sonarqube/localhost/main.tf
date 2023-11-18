@@ -4,7 +4,9 @@ terraform {
   required_providers {
     sonarqube = {
       source  = "jdamata/sonarqube"
-      version = "~> 0.16.8"
+      #version = "0.16.6"
+      #version = "~> 0.16.6"
+      version = "0.16.9"
     }
   }
 }

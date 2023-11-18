@@ -16,3 +16,12 @@
 | sonar.auth.saml.user.email             | email                                                                  |
 | sonar.auth.saml.user.login             | login                                                                  |
 | sonar.auth.saml.user.name              | name                                                                   |
+
+## Import order
+Groups
+Group Users
+Global Permissions
+Quality Profiles
+Projects
+Project Permissions
+Portfolios
