@@ -18,10 +18,11 @@
 | sonar.auth.saml.user.name              | name                                                                   |
 
 ## Import order
-Groups
-Group Users
-Global Permissions
-Quality Profiles
-Projects
-Project Permissions
-Portfolios
+01 - groups
+02 - group_users
+03 - global_permissions
+04 - quality_profiles
+05 - quality_gates
+06 - projects
+07 - project_permissions
+08 - portfolios

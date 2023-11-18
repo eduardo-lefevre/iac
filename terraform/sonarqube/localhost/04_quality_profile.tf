@@ -24,14 +24,6 @@ import {
 # __generated__ by Terraform
 # Please review these resources and move them into your main configuration files.
 
-# __generated__ by Terraform from "AYve6JuwuG_UBzLIfuOd"
-resource "sonarqube_qualityprofile" "my_way_terraform" {
-  is_default = false
-  language   = "terraform"
-  name       = "My way"
-  parent     = null
-}
-
 # __generated__ by Terraform from "AYvex3l0uG_UBzLIfuI-"
 resource "sonarqube_qualityprofile" "sonar_way___copied_abap" {
   is_default = false
@@ -40,11 +32,11 @@ resource "sonarqube_qualityprofile" "sonar_way___copied_abap" {
   parent     = null
 }
 
-# __generated__ by Terraform from "AYveyNr3uG_UBzLIfuJB"
-resource "sonarqube_qualityprofile" "sonar_way___extended_abap" {
+# __generated__ by Terraform from "AYve6JuwuG_UBzLIfuOd"
+resource "sonarqube_qualityprofile" "my_way_terraform" {
   is_default = false
-  language   = "abap"
-  name       = "Sonar way - Extended"
+  language   = "terraform"
+  name       = "My way"
   parent     = null
 }
 
@@ -53,5 +45,13 @@ resource "sonarqube_qualityprofile" "my_way_apex" {
   is_default = false
   language   = "apex"
   name       = "My way"
+  parent     = null
+}
+
+# __generated__ by Terraform from "AYveyNr3uG_UBzLIfuJB"
+resource "sonarqube_qualityprofile" "sonar_way___extended_abap" {
+  is_default = false
+  language   = "abap"
+  name       = "Sonar way - Extended"
   parent     = null
 }

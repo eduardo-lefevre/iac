@@ -24,14 +24,14 @@ resource "sonarqube_group_member" "team_users_saml_user" {
   name       = "team-users"
 }
 
-# __generated__ by Terraform from "sonar-administrators[admin]"
-resource "sonarqube_group_member" "sonar_administrators_admin" {
-  login_name = "admin"
-  name       = "sonar-administrators"
-}
-
 # __generated__ by Terraform from "team-users[user]"
 resource "sonarqube_group_member" "team_users_user" {
   login_name = "user"
   name       = "team-users"
+}
+
+# __generated__ by Terraform from "sonar-administrators[admin]"
+resource "sonarqube_group_member" "sonar_administrators_admin" {
+  login_name = "admin"
+  name       = "sonar-administrators"
 }
