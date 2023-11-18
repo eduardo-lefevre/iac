@@ -22,7 +22,7 @@ if [[ ! " ${ALLOWED_EDITIONS[@]} " =~ " ${EDITION} " ]]; then
 fi
 
 # Set the SonarQube version
-VERSION="9.9.2"
+VERSION="9.9.3"
 
 # Create the base volume directory if it doesn't exist
 mkdir -p "${BASE_VOLUME_DIR}"
