@@ -1,5 +1,10 @@
 # README.md
 
+## About
+
+This is a repo containing some experiments on SonarQube configuration automation, including via Terraform.
+Don't expect this to be fully working.
+
 ## SAML Properties
 
 | PROPERTY KEY                           | Fake Values                                                            |
